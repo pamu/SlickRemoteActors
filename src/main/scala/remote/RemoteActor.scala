@@ -29,6 +29,7 @@ class RemoteActor extends Actor with ActorLogging {
         table.createIfNotExists
         table.save(model)
       }
+      log.info("done saving to database")
     case msg => log.info(s"unknown message of type ${msg.getClass}")
   }
 }

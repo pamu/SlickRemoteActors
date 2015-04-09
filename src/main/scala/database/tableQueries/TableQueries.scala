@@ -1,8 +1,8 @@
 package database.tableQueries
 
+import database.model.{Identifiable, Versionable}
 import database.tables.IdTable
 import database.tables.Tables.EntityTable
-import models.{Identifiable, Versionable}
 import database.tables.Tables._
 
 import scala.slick.driver.MySQLDriver.simple._

@@ -20,7 +20,7 @@ class LocalActor extends Actor with ActorLogging {
   var remoteActor: Option[ActorSelection] = None
 
   override def preStart(): Unit = {
-    remoteActor = Some(context.actorSelection("akka.tcp://ChatSystem@$ip:2222/user/RemoteActor"))
+    remoteActor = Some(context.actorSelection("akka.tcp://ActorSystem@127.0.0.1:2222/user/RemoteActor"))
     remoteActor.getOrElse {
       println("ChatBox unreachable, shutting down :(")
       context.stop(self)
@@ -44,7 +44,7 @@ class LocalActor extends Actor with ActorLogging {
 
       import remote.RemoteActor._
 
-      remoteActor.map(remote => Entry[User, Long, Users](users, User("pamu nagarjuna")))
+      remoteActor.map(remote => remote ! Entry[User, Long, Users](users, User("pamu nagarjuna")))
       log.info("message sent :)")
 
     case msg => log.info(s"unknown message of type ${msg.getClass}")
@@ -56,7 +56,7 @@ object Starter {
     val config = ConfigFactory.load("client")
     val actorSystem = ActorSystem("ActorSystem", config)
     val localActor = actorSystem.actorOf(Props[LocalActor], name = "LocalActor")
-
+    import LocalActor._
     for(i <- 1 to 100) {
       localActor ! Send
       Thread.sleep(5000)
